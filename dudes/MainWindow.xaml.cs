@@ -26,6 +26,8 @@ namespace dudes
     {
         ImageHelper ImageHelper = new ImageHelper();
 
+        DirectBitmap canvasBitmap;
+
         int canvasWidth = 500;
         int canvasHeight = 500;
 
@@ -50,9 +52,86 @@ namespace dudes
         public MainWindow()
         {
             InitializeComponent();
+            canvasBitmap = new DirectBitmap(canvasWidth, canvasHeight);
             RenderOptions.SetBitmapScalingMode(canvas, BitmapScalingMode.NearestNeighbor);
-            GenerateWorld();
+
+            FrameDrawer frameDrawer = new FrameDrawer(canvasWidth,canvasHeight);
+
+            frameDrawer.FrameDrawn += FrameDrawn;
+
+            Task.Run(() => frameDrawer.Draw());
+
+            //GenerateWorld();
         }
+
+        void FrameDrawn(object sender, FrameDrawnEventArgs e)
+        {
+            canvas.Source = canvas.Source = ImageHelper.BitmapToImageSource(e.bitmap);
+        }
+
+        public class FrameDrawnEventArgs : EventArgs
+        {
+            public Bitmap bitmap { get; set; }
+        }
+
+        class FrameDrawer
+        {
+            private int canvasWidth;
+            private int canvasHeight;
+
+            public event EventHandler<FrameDrawnEventArgs> FrameDrawn;
+
+            public FrameDrawer(int canvasWidth, int canvasHeight)
+            {
+                this.canvasWidth = canvasWidth;
+                this.canvasHeight = canvasHeight;
+            }
+
+            public void Draw()
+            {
+                DirectBitmap bitmap = new DirectBitmap(canvasWidth, canvasHeight);
+
+                //foreach (Town town in towns)
+                //{
+                //    bitmap.SetPixel(town.X, town.Y, townColour);
+                //}
+
+                //foreach (Shop shop in shops)
+                //{
+                //    bitmap.SetPixel(shop.X, shop.Y, shopColour);
+                //}
+
+                //foreach (Dude dude in dudes)
+                //{
+                //    bitmap.SetPixel(dude.X, dude.Y, System.Drawing.Color.FromArgb(255, dude.Health, dude.Health, dude.Health));
+                //}
+
+                while (true)
+                {
+                    for (int y = 0; y < canvasHeight; y++)
+                    {
+                        for (int x = 0; x < canvasWidth; x++)
+                        {
+                            bitmap.SetPixel(x, y, System.Drawing.Color.Red);
+                        }
+                    }
+
+                    for (int y = 0; y < canvasHeight; y++)
+                    {
+                        for (int x = 0; x < canvasWidth; x++)
+                        {
+                            bitmap.SetPixel(x, y, System.Drawing.Color.Blue);
+                        }
+                    }
+
+                    FrameDrawnEventArgs frameDrawnEventArgs = new FrameDrawnEventArgs() { bitmap = bitmap.Bitmap };
+
+                    FrameDrawn(this, frameDrawnEventArgs);
+                }
+
+            }
+        }
+
 
         double Distance(int fromX, int fromY, int toX, int toY)
         {
@@ -121,26 +200,6 @@ namespace dudes
             
         }
 
-        private void Draw()
-        {
-            DirectBitmap bitmap = new DirectBitmap(canvasWidth, canvasHeight);
-
-            foreach (Town town in towns)
-            {
-                bitmap.SetPixel(town.X, town.Y, townColour);
-            }
-
-            foreach (Shop shop in shops)
-            {
-                bitmap.SetPixel(shop.X, shop.Y, shopColour);
-            }
-
-            foreach (Dude dude in dudes)
-            {
-                bitmap.SetPixel(dude.X, dude.Y, System.Drawing.Color.FromArgb(255, dude.Health, dude.Health, dude.Health));
-            }
-            canvas.Source = ImageHelper.BitmapToImageSource(bitmap.Bitmap);
-        }
 
         private void GenerateButton_Click(object sender, RoutedEventArgs e)
         {
@@ -153,7 +212,7 @@ namespace dudes
             Thread.Sleep(10);
             CreateDudes();
 
-            Draw();
+            //Draw();
         }
 
         private void ResetWorld_Click(object sender, RoutedEventArgs e)
@@ -166,7 +225,7 @@ namespace dudes
             towns = new List<Town>();
             shops = new List<Shop>();
             dudes = new List<Dude>();
-            Draw();
+            //Draw();
         }
     }
 }

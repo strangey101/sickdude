@@ -16,5 +16,18 @@ namespace dudes
 
         public int Health { get; set; }
         public double Age { get; set; }
+
+        public void GoToDestination(double steps)
+        {
+            double xDistance = Math.Abs(DestinationX - X);
+
+        }
+
+        public bool IsAtDestination()
+        {
+            bool success = false;
+
+            return success;
+        }
     }
 }

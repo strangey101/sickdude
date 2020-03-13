@@ -49,88 +49,72 @@ namespace dudes
 
         Random random = new Random();
 
+        public delegate void UpdateBitmapCallback(Bitmap bitmap);
+
         public MainWindow()
         {
             InitializeComponent();
             canvasBitmap = new DirectBitmap(canvasWidth, canvasHeight);
             RenderOptions.SetBitmapScalingMode(canvas, BitmapScalingMode.NearestNeighbor);
 
-            FrameDrawer frameDrawer = new FrameDrawer(canvasWidth,canvasHeight);
-
-            frameDrawer.FrameDrawn += FrameDrawn;
-
-            Task.Run(() => frameDrawer.Draw());
+            Thread draw = new Thread(new ThreadStart(Draw));
+            draw.Start();
 
             //GenerateWorld();
         }
 
-        void FrameDrawn(object sender, FrameDrawnEventArgs e)
+        private void UpdateCanvas(Bitmap bitmap)
         {
-            canvas.Source = canvas.Source = ImageHelper.BitmapToImageSource(e.bitmap);
+            canvas.Source = ImageHelper.BitmapToImageSource(bitmap);
         }
 
-        public class FrameDrawnEventArgs : EventArgs
+
+        public void Draw()
         {
-            public Bitmap bitmap { get; set; }
-        }
+            DirectBitmap bitmap = new DirectBitmap(canvasWidth, canvasHeight);
 
-        class FrameDrawer
-        {
-            private int canvasWidth;
-            private int canvasHeight;
+            //foreach (Town town in towns)
+            //{
+            //    bitmap.SetPixel(town.X, town.Y, townColour);
+            //}
 
-            public event EventHandler<FrameDrawnEventArgs> FrameDrawn;
+            //foreach (Shop shop in shops)
+            //{
+            //    bitmap.SetPixel(shop.X, shop.Y, shopColour);
+            //}
 
-            public FrameDrawer(int canvasWidth, int canvasHeight)
+            //foreach (Dude dude in dudes)
+            //{
+            //    bitmap.SetPixel(dude.X, dude.Y, System.Drawing.Color.FromArgb(255, dude.Health, dude.Health, dude.Health));
+            //}
+
+            while (true)
             {
-                this.canvasWidth = canvasWidth;
-                this.canvasHeight = canvasHeight;
-            }
-
-            public void Draw()
-            {
-                DirectBitmap bitmap = new DirectBitmap(canvasWidth, canvasHeight);
-
-                //foreach (Town town in towns)
-                //{
-                //    bitmap.SetPixel(town.X, town.Y, townColour);
-                //}
-
-                //foreach (Shop shop in shops)
-                //{
-                //    bitmap.SetPixel(shop.X, shop.Y, shopColour);
-                //}
-
-                //foreach (Dude dude in dudes)
-                //{
-                //    bitmap.SetPixel(dude.X, dude.Y, System.Drawing.Color.FromArgb(255, dude.Health, dude.Health, dude.Health));
-                //}
-
-                while (true)
+                for (int y = 0; y < canvasHeight; y++)
                 {
-                    for (int y = 0; y < canvasHeight; y++)
+                    for (int x = 0; x < canvasWidth; x++)
                     {
-                        for (int x = 0; x < canvasWidth; x++)
-                        {
-                            bitmap.SetPixel(x, y, System.Drawing.Color.Red);
-                        }
+                        bitmap.SetPixel(x, y, System.Drawing.Color.Red);
                     }
-
-                    for (int y = 0; y < canvasHeight; y++)
-                    {
-                        for (int x = 0; x < canvasWidth; x++)
-                        {
-                            bitmap.SetPixel(x, y, System.Drawing.Color.Blue);
-                        }
-                    }
-
-                    FrameDrawnEventArgs frameDrawnEventArgs = new FrameDrawnEventArgs() { bitmap = bitmap.Bitmap };
-
-                    FrameDrawn(this, frameDrawnEventArgs);
                 }
 
+                canvas.Dispatcher.Invoke(new UpdateBitmapCallback(this.UpdateCanvas), new object[] { bitmap.Bitmap });
+                Thread.Sleep(50);
+
+                for (int y = 0; y < canvasHeight; y++)
+                {
+                    for (int x = 0; x < canvasWidth; x++)
+                    {
+                        bitmap.SetPixel(x, y, System.Drawing.Color.Blue);
+                    }
+                }
+
+                canvas.Dispatcher.Invoke(new UpdateBitmapCallback(this.UpdateCanvas), new object[] { bitmap.Bitmap });
+                Thread.Sleep(50);
             }
+
         }
+        
 
 
         double Distance(int fromX, int fromY, int toX, int toY)
@@ -226,6 +210,11 @@ namespace dudes
             shops = new List<Shop>();
             dudes = new List<Dude>();
             //Draw();
+        }
+
+        private void GoButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

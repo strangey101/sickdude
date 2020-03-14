@@ -1,0 +1,4 @@
+{firstname}'s Shop
+{firstinitial} {lastname} Food
+{firstinitial}{lastinitial} Ltd.
+{townname} Stores

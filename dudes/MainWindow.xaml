@@ -7,12 +7,13 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Image x:Name="canvas" Margin="0,45,0,0"/>
+        <Image x:Name="canvas" Margin="0,45,300,0" MouseMove="MouseMove"/>
         <Button x:Name="GenerateButton" Content="Generate" HorizontalAlignment="Left" Margin="90,10,0,0" VerticalAlignment="Top" Width="75" Click="GenerateButton_Click"/>
         <Button x:Name="ResetWorldButton" Content="Reset" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="ResetWorld_Click"/>
         <Button x:Name="GoButton" Content="Go" HorizontalAlignment="Left" Margin="170,10,0,0" VerticalAlignment="Top" Width="75" Click="GoButton_Click"/>
-        <TextBox x:Name="GoSteps" HorizontalAlignment="Left" Height="20" Margin="250,10,0,0" TextWrapping="Wrap" Text="100" VerticalAlignment="Top" Width="64"/>
-        <Label Content="Cycles" HorizontalAlignment="Left" Margin="319,6,0,0" VerticalAlignment="Top" Height="24"/>
+        <TextBox x:Name="MousePos" Height="20" Margin="250,10,91,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <TextBlock x:Name="actionLog" Margin="0,45,0,0" TextWrapping="Wrap" Text="TextBlock" HorizontalAlignment="Right" Width="295"/>
+        <Label x:Name="dudeCountLabel" Content="Dudes:" Margin="0,5,0,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="86"/>
 
     </Grid>
 </Window>

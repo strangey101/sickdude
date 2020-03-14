@@ -6,11 +6,7 @@ using System.Threading.Tasks;
 
 namespace dudes
 {
-    class Town
+    class Town : GameObject
     {
-        public int Id { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
-
     }
 }

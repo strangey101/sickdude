@@ -8,5 +8,6 @@ namespace dudes
 {
     class Town : GameObject
     {
+        public int visits { get; set; }
     }
 }

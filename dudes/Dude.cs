@@ -99,6 +99,7 @@ namespace dudes
                 Action = action.GoingToShop;
                 // pick a shop
                 Shop shopToGoTo = shops[random.Next(shops.Count)];
+                shopToGoTo.visits++;
                 DestinationName = shopToGoTo.Name;
                 DestinationX = shopToGoTo.X;
                 DestinationY = shopToGoTo.Y;
@@ -108,6 +109,7 @@ namespace dudes
                 Action = action.GoingToTown;
                 // pick a town
                 Town townToGoTo = towns[random.Next(towns.Count)];
+                townToGoTo.visits++;
                 DestinationName = townToGoTo.Name;
                 DestinationX = townToGoTo.X;
                 DestinationY = townToGoTo.Y;

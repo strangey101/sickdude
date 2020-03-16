@@ -30,7 +30,7 @@ namespace dudes
         int canvasHeight = 200;
 
         int townCount = 20;
-        int dudeCount = 15;
+        int dudeCount = 20;
         int maxDudes = 250;
 
         int minBreedAge = 18;
@@ -43,7 +43,7 @@ namespace dudes
         int maxShopsPerTown = 10;
         int townToShopDistance = 10;
 
-        double desireToStayAtHome = 5;
+        double desireToStayAtHome = 7;
         double desireToGoToTown = 10;
         double desireToGoToShop = 5;
         double desireToGoFar = 5;
@@ -129,12 +129,16 @@ namespace dudes
             int actualX = (int)((location.X / canvas.ActualWidth) * canvasWidth);
             int actualY = (int)((location.Y / canvas.ActualHeight) * canvasHeight);
             MousePos.Text = $"X={actualX} Y={actualY}";
+            if (actualX >= canvasWidth)
+                actualX = canvasWidth - 1;
+            if (actualY >= canvasHeight)
+                actualY = canvasHeight - 1;
 
             List<GameObject> objectsAtLocation = whatsAtLocation[actualX, actualY];
 
             foreach(GameObject gameobject in objectsAtLocation)
             {
-                MousePos.Text += $" {objectsAtLocation[0].Name}";
+                MousePos.Text += $" {gameobject.Name}";
                 if(gameobject is Dude)
                 {
                     Dude thisDude = (Dude)gameobject;
@@ -251,6 +255,35 @@ namespace dudes
                     {
                         if (shop.X >= canvasWidth) shop.X = canvasWidth - 1;
                         if (shop.Y >= canvasHeight) shop.Y = canvasHeight - 1;
+
+
+                        // left
+                        if (shop.X > 1)
+                        {
+                            bitmap.SetPixel((int)shop.X - 1, (int)shop.Y, shopColour);
+                            whatsAtLocation[(int)shop.X - 1, (int)shop.Y].Add(shop);
+                        }
+                        // right
+                        if (shop.X < canvasWidth - 1)
+                        {
+                            bitmap.SetPixel((int)shop.X + 1, (int)shop.Y, shopColour);
+                            whatsAtLocation[(int)shop.X + 1, (int)shop.Y].Add(shop);
+                        }
+                        // top
+                        if (shop.Y > 1)
+                        {
+                            bitmap.SetPixel((int)shop.X, (int)shop.Y - 1, shopColour);
+                            whatsAtLocation[(int)shop.X, (int)shop.Y - 1].Add(shop);
+                        }
+                        //bottom
+                        if (shop.Y < canvasWidth - 1)
+                        {
+                            bitmap.SetPixel((int)shop.X, (int)shop.Y + 1, shopColour);
+                            whatsAtLocation[(int)shop.X, (int)shop.Y + 1].Add(shop);
+                        }
+
+
+
                         bitmap.SetPixel((int)shop.X, (int)shop.Y, shopColour);
 
                         whatsAtLocation[(int)shop.X, (int)shop.Y].Add(shop);
@@ -362,7 +395,9 @@ namespace dudes
                                 newDude.Health = 255;
                                 newDude.Gender = (Dude.gender)random.Next(2);
                                 newDude.firstName = GetRandomFirstName(newDude.Gender);
-                                newDude.surname = firstMale.surname;
+                                newDude.surname = $"{firstMale.surname}-{firstFemale.surname}";
+                                if (newDude.surname.Length > 20)
+                                    newDude.surname = GetRandomSurname();
                                 newDude.Name = $"{newDude.firstName} {newDude.surname}";
                                 newDude.Age = 0;
                                 newDude.Action = Dude.action.StayingAtHome;

@@ -8,6 +8,6 @@ namespace dudes
 {
     class Shop : GameObject
     {
-
+        public int  visits { get; set; }
     }
 }
